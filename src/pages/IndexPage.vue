@@ -1,16 +1,16 @@
 <template>
   <q-page class="bg-grey-3 column">
     <div class="row q-pa-sm bg-primary">
-      <q-input @keyup.enter="addTask" filled v-model="newTask" placeholder="Adicione uma tarefa" dense bg-color="white"
+      <q-input @keyup.enter="addTask()" filled v-model="newTask" placeholder="Adicione uma tarefa" dense bg-color="white"
         class="col" square>
         <template v-slot:append>
-          <q-btn round dense flat icon="add" @click="addTask" />
+          <q-btn round dense flat icon="add" @click="addTask()" />
         </template>
       </q-input>
     </div>
 
     <q-list separator bordered class="bg-white">
-      <q-item v-for=" (task, index) in tasks" :key="task.title" @click="task.done = !task.done"
+      <q-item v-for=" (task, index) in taskList" :key="task.title" @click="task.done = !task.done"
         :class="{ 'done bg-blue-1': task.done }" clickable v-ripple>
         <q-item-section avatar>
           <q-checkbox v-model="task.done" class="no-pointer-events" color="primary" />
@@ -25,7 +25,7 @@
       </q-item>
     </q-list>
 
-    <div v-if="!tasks.length" class="no-tasks absolute-center">
+    <div v-if="!taskList.length" class="no-tasks absolute-center">
       <q-icon name="task" size="100px" color="primary" />
       <div class="text-h5 text-primary text-center">
         Sem tarefas
@@ -35,17 +35,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
+import { useTodoStore } from 'stores/todos';
 
-interface TasksInterface {
-  title: string
-  done?: boolean
-  message?: string
-  persistent?: boolean
-}
+const toDoStore = useTodoStore()
+
 const newTask = ref('')
 
-const tasks = ref([] as unknown as TasksInterface[])
+const taskList = computed(() => toDoStore.getTasks)
+
+function addTask() {
+  toDoStore.createTask({
+    title: newTask.value,
+    done: false
+  })
+}
 </script>
 
 <style lang="scss">
