@@ -51,7 +51,7 @@ function addTask() {
   })
 }
 
-function deleteTask(id) {
+function deleteTask(id: number) {
   toDoStore.deleteTask(id)
 }
 </script>
