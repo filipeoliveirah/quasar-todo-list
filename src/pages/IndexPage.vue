@@ -8,8 +8,8 @@
         </template>
       </q-input>
     </div>
-    <q-list separator bordered class="bg-white">
 
+    <q-list separator bordered class="bg-white">
       <q-item v-for=" (task, index) in tasks" :key="task.title" @click="task.done = !task.done"
         :class="{ 'done bg-blue-1': task.done }" clickable v-ripple>
         <q-item-section avatar>
@@ -22,14 +22,13 @@
         <q-item-section v-if="task.done" side>
           <q-btn @click.stop="deleteTask(index)" flat round color="primary" icon="delete" />
         </q-item-section>
-
       </q-item>
-
     </q-list>
+
     <div v-if="!tasks.length" class="no-tasks absolute-center">
       <q-icon name="task" size="100px" color="primary" />
       <div class="text-h5 text-primary text-center">
-        Adicione umas tarefa
+        Sem tarefas
       </div>
     </div>
   </q-page>
