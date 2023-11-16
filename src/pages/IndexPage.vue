@@ -4,7 +4,7 @@
       <q-input @keyup.enter="addTask()" filled v-model="newTask" placeholder="Adicione uma tarefa" dense bg-color="white"
         class="col" square>
         <template v-slot:append>
-          <q-btn round dense flat icon="add" @click="addTask()" />
+          <q-btn v-if="newTask" round dense flat icon="add" @click="addTask()" />
         </template>
       </q-input>
     </div>
