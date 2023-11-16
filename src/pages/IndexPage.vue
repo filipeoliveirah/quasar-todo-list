@@ -4,7 +4,8 @@
       <q-input @keyup.enter="addTask()" filled v-model="newTask" placeholder="Adicione uma tarefa" dense bg-color="white"
         class="col" square>
         <template v-slot:append>
-          <q-btn v-if="newTask" round dense flat icon="add" @click="addTask()" />
+          <q-btn v-if="updateTitle && newTask" round dense flat icon="edit" @click="updateTasks(selectedId)" />
+          <q-btn v-if="!updateTitle && newTask" round dense flat icon="add" @click="addTask()" />
         </template>
       </q-input>
     </div>
@@ -20,7 +21,10 @@
         </q-item-section>
 
         <q-item-section v-if="!task.done" side>
-          <q-btn @click.stop="deleteTask(index)" flat round color="primary" icon="delete" />
+          <div class="q-flex">
+            <q-btn v-if="!updateTitle" @click.stop="updateTitleTask(index)" flat round color="primary" icon="edit" />
+            <q-btn @click.stop="deleteTask(index)" flat round color="primary" icon="delete" />
+          </div>
         </q-item-section>
       </q-item>
     </q-list>
@@ -42,6 +46,10 @@ const toDoStore = useTodoStore()
 
 const newTask = ref('')
 
+const selectedId = ref(0)
+
+const updateTitle = ref(false)
+
 const taskList = computed(() => toDoStore.getTasks)
 
 function addTask() {
@@ -49,10 +57,24 @@ function addTask() {
     title: newTask.value,
     done: false
   })
+  newTask.value = ''
+}
+
+function updateTitleTask(id: number) {
+  updateTitle.value = true
+  newTask.value = toDoStore.tasks[id].title
+  selectedId.value = id
+}
+
+function updateTasks(id: number) {
+  updateTitle.value = false
+  toDoStore.updateTask(id, newTask.value)
+  newTask.value = ''
 }
 
 function deleteTask(id: number) {
   toDoStore.deleteTask(id)
+  newTask.value = ''
 }
 </script>
 
