@@ -1,49 +1,67 @@
 <template>
-  <q-page class="row items-center justify-evenly">
-    <example-component
-      title="Example component"
-      active
-      :todos="todos"
-      :meta="meta"
-    ></example-component>
+  <q-page class="bg-grey-3 column">
+    <div class="row q-pa-sm bg-primary">
+      <q-input @keyup.enter="addTask" filled v-model="newTask" placeholder="Adicione uma tarefa" dense bg-color="white"
+        class="col" square>
+        <template v-slot:append>
+          <q-btn round dense flat icon="add" @click="addTask" />
+        </template>
+      </q-input>
+    </div>
+    <q-list separator bordered class="bg-white">
+
+      <q-item v-for=" (task, index) in tasks" :key="task.title" @click="task.done = !task.done"
+        :class="{ 'done bg-blue-1': task.done }" clickable v-ripple>
+        <q-item-section avatar>
+          <q-checkbox v-model="task.done" class="no-pointer-events" color="primary" />
+        </q-item-section>
+        <q-item-section>
+          <q-item-label>{{ task.title }}</q-item-label>
+        </q-item-section>
+
+        <q-item-section v-if="task.done" side>
+          <q-btn @click.stop="deleteTask(index)" flat round color="primary" icon="delete" />
+        </q-item-section>
+
+      </q-item>
+
+    </q-list>
+    <div v-if="!tasks.length" class="no-tasks absolute-center">
+      <q-icon name="task" size="100px" color="primary" />
+      <div class="text-h5 text-primary text-center">
+        Adicione umas tarefa
+      </div>
+    </div>
   </q-page>
 </template>
 
-<script lang="ts">
-import { Todo, Meta } from 'components/models';
-import ExampleComponent from 'components/ExampleComponent.vue';
-import { defineComponent, ref } from 'vue';
+<script setup lang="ts">
+import { ref } from 'vue';
 
-export default defineComponent({
-  name: 'IndexPage',
-  components: { ExampleComponent },
-  setup () {
-    const todos = ref<Todo[]>([
-      {
-        id: 1,
-        content: 'ct1'
-      },
-      {
-        id: 2,
-        content: 'ct2'
-      },
-      {
-        id: 3,
-        content: 'ct3'
-      },
-      {
-        id: 4,
-        content: 'ct4'
-      },
-      {
-        id: 5,
-        content: 'ct5'
-      }
-    ]);
-    const meta = ref<Meta>({
-      totalCount: 1200
-    });
-    return { todos, meta };
-  }
-});
+interface TasksInterface {
+  title: string
+  done?: boolean
+  message?: string
+  persistent?: boolean
+}
+const newTask = ref('')
+
+const tasks = ref([] as unknown as TasksInterface[])
 </script>
+
+<style lang="scss">
+.done {
+  .q-item__label {
+    text-decoration: line-through;
+    color: #bbb;
+  }
+}
+
+.no-tasks {
+  opacity: 0.5;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+</style>
