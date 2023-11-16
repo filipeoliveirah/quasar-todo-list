@@ -19,7 +19,7 @@
           <q-item-label>{{ task.title }}</q-item-label>
         </q-item-section>
 
-        <q-item-section v-if="task.done" side>
+        <q-item-section v-if="!task.done" side>
           <q-btn @click.stop="deleteTask(index)" flat round color="primary" icon="delete" />
         </q-item-section>
       </q-item>
@@ -49,6 +49,10 @@ function addTask() {
     title: newTask.value,
     done: false
   })
+}
+
+function deleteTask(id) {
+  toDoStore.deleteTask(id)
 }
 </script>
 
